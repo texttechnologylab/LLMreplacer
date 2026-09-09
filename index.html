@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DUUI Log Converter</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <h1>DUUI Log Converter</h1>
+        <p class="tagline">
+          Drag in your DUUI Python component scripts and an LLM rewrites them. Converts <code>print()</code> to
+          <code>duui_logging</code> and wires up third-party log forwarding. Then download the updated files.
+        </p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <!-- Setup -->
+      <section class="card" id="settings">
+        <h2><span class="step">1</span> Setup</h2>
+
+        <div class="method">
+          <span class="method-label">Conversion method</span>
+          <div class="segmented" role="group" aria-label="Conversion method">
+            <button type="button" id="methodAlgo" class="seg" aria-pressed="false">Algorithm (offline)</button>
+            <button type="button" id="methodLLM" class="seg" aria-pressed="true">LLM (OpenWebUI)</button>
+          </div>
+        </div>
+        <p class="method-hint" id="methodHint"></p>
+
+        <div id="connFields">
+          <div class="grid">
+            <label class="field">
+              <span>Base URL</span>
+              <input id="baseUrl" type="text" placeholder="https://llm.texttechnologylab.org/" autocomplete="off" />
+            </label>
+            <label class="field">
+              <span>API key</span>
+              <span class="input-with-btn">
+                <input id="apiKey" type="password" placeholder="sk-..." autocomplete="off" />
+                <button id="toggleKey" type="button" class="ghost" title="Show / hide">👁</button>
+              </span>
+            </label>
+          </div>
+          <div class="grid">
+            <label class="field">
+              <span>Model</span>
+              <span class="input-with-btn">
+                <select id="model"><option value="">load models first</option></select>
+                <button id="loadModels" type="button" class="secondary">Load models</button>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div class="options">
+          <label class="check">
+            <input type="checkbox" id="forwardThirdParty" checked />
+            <span class="check-body">
+              <strong>Forward third-party library logs</strong>
+              <small>
+                Adds <code>duui_logging.install(...)</code> so logs from libraries you use
+                (torch, transformers, ...) and <code>warnings.warn(...)</code> also reach DUUI.
+                Turn off to forward <em>only</em> your own <code>print()</code> /
+                <code>log_*</code> calls.
+              </small>
+            </span>
+          </label>
+          <label class="field" id="levelField">
+            <span>Minimum level to forward: <code>install(level=...)</code></span>
+            <select id="installLevel">
+              <option value="DEBUG">DEBUG: forward everything</option>
+              <option value="INFO" selected>INFO: info and above (default)</option>
+              <option value="WARNING">WARNING: warnings and above</option>
+              <option value="ERROR">ERROR: errors only</option>
+            </select>
+          </label>
+        </div>
+        <p id="connStatus" class="status" aria-live="polite"></p>
+      </section>
+
+      <!-- Drag and Drop -->
+      <section class="card" id="dropCard">
+        <h2><span class="step">2</span> Add your Python files</h2>
+        <div id="dropzone" class="dropzone" tabindex="0">
+          <p class="dz-big">Drag &amp; drop <strong>.py</strong> files or a folder here</p>
+          <p class="dz-sub">...or <button id="browseBtn" type="button" class="linklike">browse files</button>
+            / <button id="browseDir" type="button" class="linklike">browse folder</button></p>
+          <p class="dz-note"><code>pyproject.toml</code> and <code>requirements.txt</code> are picked up too. The <code>duui-logging</code> dependency is added to them.</p>
+          <input id="fileInput" type="file" accept=".py,.toml,.txt" multiple hidden />
+          <input id="dirInput" type="file" webkitdirectory directory multiple hidden />
+        </div>
+      </section>
+
+      <!-- File Conversion -->
+      <section class="card" id="filesCard" hidden>
+        <div class="files-head">
+          <h2><span class="step">3</span> Convert &amp; download</h2>
+          <div class="toolbar">
+            <button id="convertAll" class="primary">Convert all</button>
+            <button id="downloadZip" class="secondary" disabled>Download all (.zip)</button>
+            <button id="clearAll" class="ghost">Clear</button>
+          </div>
+        </div>
+        <div id="progress" class="progress" hidden>
+          <div class="bar"><div id="progressBar" class="bar-fill"></div></div>
+          <span id="progressText"></span>
+        </div>
+        <ul id="fileList" class="file-list"></ul>
+      </section>
+    </main>
+
+    <footer class="site-footer wrap">
+      <p>
+        Runs entirely in your browser. Keys and files stay local; only the file contents are sent
+        to the OpenWebUI instance you configure. Part of
+        <a href="https://github.com/texttechnologylab/DUUIlogger" target="_blank" rel="noopener">DUUI logging</a>.
+      </p>
+    </footer>
+
+    <!-- scripts; order matters!! -->
+    <script src="js/zip.js"></script>
+    <script src="js/diff.js"></script>
+    <script src="js/prompt.js"></script>
+    <script src="js/rules.js"></script>
+    <script src="js/openwebui.js"></script>
+    <script src="js/convert.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
