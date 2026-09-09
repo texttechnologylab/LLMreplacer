@@ -1,6 +1,6 @@
 # DUUI Log Converter
 
-A zero-setup browser tool that converts [DUUI](https://github.com/texttechnologylab/DockerUnifiedUIMAInterface)
+A zero-setup browser tool that converts [DockerUnifiedUIMAInterface](https://github.com/texttechnologylab/DockerUnifiedUIMAInterface) (DUUI)
 Python tool components to use the [`duui_logging`](https://github.com/texttechnologylab/DUUIlogger)
 library. Two methods: an offline rule-based **Algorithm**, or an **LLM** via a self-hosted
 [OpenWebUI](https://openwebui.com/). For the LLM, a capable model like **`gpt-oss:20b`** is
